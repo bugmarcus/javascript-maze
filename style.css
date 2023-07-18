@@ -21,3 +21,32 @@ body {
   padding: 0.5rem 0 1.5rem 0;
   margin: 1rem 0 1rem 0;
 }
+
+#labirinto {
+  border: 5px solid black;
+}
+
+.linha {
+  display: flex;
+}
+
+.celula {
+  display: flex;
+  width: 35px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.parede {
+  background-color: #333;
+}
+
+.jogador {
+  background-color: turquoise;
+}
+
+.chegada {
+  background-color: rgb(232, 104, 104);
+}
