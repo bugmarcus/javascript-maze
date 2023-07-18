@@ -18,7 +18,6 @@ const modeloLabirinto = [
 let posicaoJogador = { linha: 9, coluna: 0 };
 
 function criarLabirinto(labirinto, posicao) {
-  // Div final que receberá todas as linhas
   const divLabirinto = document.querySelector("#labirinto");
   divLabirinto.innerHTML = "";
 
@@ -32,34 +31,28 @@ function criarLabirinto(labirinto, posicao) {
 
       const celulaAtual = labirinto[linha][coluna];
 
-      // 1 - Quando a celula é W
       if (celulaAtual === "W") {
         celula.innerText = "W";
         celula.classList.add("parede");
-        // } else if (celulaAtual === "S") {
       } else if (linha === posicao.linha && coluna === posicao.coluna) {
         celula.innerText = "S";
-        // 2 - Quando a celula é "S"
         celula.classList.add("jogador");
       } else if (celulaAtual === "F") {
         celula.innerText = "F";
-        // 3 - Quando a celula é "F"
         celula.classList.add("chegada");
       } else if (celulaAtual === "") {
-        // 4 - Quando a celula é ""
         celula.classList.add("caminho");
       }
 
       divLinha.appendChild(celula);
     }
     divLabirinto.appendChild(divLinha);
-    // console.log(divLinha);
   }
 }
 
 function validaMovimento(posicao) {
-  const totalLinhas = modeloLabirinto.length; // 15
-  const totalColunas = modeloLabirinto[0].length; // 21
+  const totalLinhas = modeloLabirinto.length;
+  const totalColunas = modeloLabirinto[0].length;
   const linha = posicao.linha;
   const coluna = posicao.coluna;
 
@@ -73,15 +66,31 @@ function validaMovimento(posicao) {
     return false;
   }
 
-  // if (modeloLabirinto[linha][coluna] === "W") {
-  //   return false;
-  // }
-
   return true;
 }
 
+function mostraResultado() {
+  const containerResultado = document.getElementById("container-resultado");
+  containerResultado.style.display = "block";
+}
+
+function escondeResultado() {
+  const containerResultado = document.getElementById("container-resultado");
+  containerResultado.style.display = "none";
+}
+
 function verificaVitoria(posicao) {
-  return modeloLabirinto[posicao.linha][posicao.coluna] === "F";
+  if (modeloLabirinto[posicao.linha][posicao.coluna] === "F") {
+    mostraResultado();
+    return true;
+  }
+  return false;
+}
+
+function resetarJogo() {
+  posicaoJogador = { linha: 9, coluna: 0 };
+  criarLabirinto(modeloLabirinto, posicaoJogador);
+  escondeResultado();
 }
 
 document.addEventListener("keydown", function (evento) {
@@ -91,7 +100,6 @@ document.addEventListener("keydown", function (evento) {
     coluna: posicaoJogador.coluna,
   };
 
-  // Identificando a tecla apertada;
   if (teclaPressionada === "ArrowUp") {
     novaPosicao.linha -= 1;
   } else if (teclaPressionada === "ArrowDown") {
@@ -105,11 +113,11 @@ document.addEventListener("keydown", function (evento) {
   if (validaMovimento(novaPosicao)) {
     posicaoJogador = novaPosicao;
     criarLabirinto(modeloLabirinto, posicaoJogador);
-
-    if (verificaVitoria(posicaoJogador)) {
-      alert("Parabéns, você venceu!");
-    }
+    verificaVitoria(posicaoJogador);
   }
 });
+
+const btnResetarJogo = document.getElementById("btn-resetar-jogo");
+btnResetarJogo.addEventListener("click", resetarJogo);
 
 criarLabirinto(modeloLabirinto, posicaoJogador);
