@@ -4,7 +4,7 @@ A simple maze game implemented in HTML, CSS, and JavaScript.
 
 ## Description
 
-This project is a maze game where the player must navigate through a maze to reach the finish point (F) while avoiding walls (W). The player can move using the arrow keys, and the goal is to reach the finish point with the minimum number of movements.
+This project is a maze game where the player must navigate through a maze to reach the finish point (potato) while avoiding walls. The player can move using the arrow keys, and the goal is to reach the finish point with the minimum number of movements.
 
 ## Demo
 
