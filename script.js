@@ -1,4 +1,4 @@
-const modeloLabirinto = [
+const mazeModel = [
   "WWWWWWWWWWWWWWWWWWWWW",
   "W   W     W     W W W",
   "W W W WWW WWWWW W W W",
@@ -16,54 +16,54 @@ const modeloLabirinto = [
   "WWWWWWWWWWWWWWWWWWWWW",
 ];
 
-const posicaoInicial = { linha: 9, coluna: 0 };
+const initialPosition = { row: 9, column: 0 };
 
-let posicaoAtual = { linha: 9, coluna: 0 };
-let movimentos = 0;
+let currentPosition = { row: 9, column: 0 };
+let movements = 0;
 
-function criarLabirinto(labirinto, posicao) {
-  const divLabirinto = document.querySelector("#labirinto");
-  divLabirinto.innerHTML = "";
+function createMaze(maze, position) {
+  const divMaze = document.querySelector("#maze");
+  divMaze.innerHTML = "";
 
-  for (let linha = 0; linha < labirinto.length; linha++) {
-    const divLinha = document.createElement("div");
-    divLinha.classList.add("linha");
+  for (let row = 0; row < maze.length; row++) {
+    const divRow = document.createElement("div");
+    divRow.classList.add("row");
 
-    for (let coluna = 0; coluna < labirinto[linha].length; coluna++) {
-      const celula = document.createElement("div");
-      celula.classList.add("celula");
+    for (let column = 0; column < maze[row].length; column++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
 
-      const celulaAtual = labirinto[linha][coluna];
+      const currentCell = maze[row][column];
 
-      if (celulaAtual === "W") {
-        celula.classList.add("parede");
-      } else if (linha === posicao.linha && coluna === posicao.coluna) {
-        celula.classList.add("jogador");
-      } else if (celulaAtual === "F") {
-        celula.classList.add("chegada");
-      } else if (celulaAtual === " ") {
-        celula.classList.add("caminho");
+      if (currentCell === "W") {
+        cell.classList.add("wall");
+      } else if (row === position.row && column === position.column) {
+        cell.classList.add("player");
+      } else if (currentCell === "F") {
+        cell.classList.add("finish");
+      } else if (currentCell === " ") {
+        cell.classList.add("path");
       }
 
-      divLinha.appendChild(celula);
+      divRow.appendChild(cell);
     }
 
-    divLabirinto.appendChild(divLinha);
+    divMaze.appendChild(divRow);
   }
 }
 
-function validarMovimento(labirinto, posicao) {
-  const totalLinhas = labirinto.length;
-  const totalColunas = labirinto[0].length;
-  const linha = posicao.linha;
-  const coluna = posicao.coluna;
+function validateMovement(maze, position) {
+  const totalRows = maze.length;
+  const totalColumns = maze[0].length;
+  const row = position.row;
+  const column = position.column;
 
   if (
-    linha < 0 ||
-    linha >= totalLinhas ||
-    coluna < 0 ||
-    coluna >= totalColunas ||
-    labirinto[linha][coluna] === "W"
+    row < 0 ||
+    row >= totalRows ||
+    column < 0 ||
+    column >= totalColumns ||
+    maze[row][column] === "W"
   ) {
     return false;
   }
@@ -71,79 +71,76 @@ function validarMovimento(labirinto, posicao) {
   return true;
 }
 
-function moverJogador(labirinto, teclaPressionada) {
-  const novaPosicao = {
-    linha: posicaoAtual.linha,
-    coluna: posicaoAtual.coluna,
+function moverJogador(maze, pressedKey) {
+  const newPosition = {
+    row: currentPosition.row,
+    column: currentPosition.column,
   };
-  if (teclaPressionada === "ArrowUp") {
-    novaPosicao.linha -= 1;
-  } else if (teclaPressionada === "ArrowDown") {
-    novaPosicao.linha += 1;
-  } else if (teclaPressionada === "ArrowLeft") {
-    novaPosicao.coluna -= 1;
-  } else if (teclaPressionada === "ArrowRight") {
-    novaPosicao.coluna += 1;
+  if (pressedKey === "ArrowUp") {
+    newPosition.row -= 1;
+  } else if (pressedKey === "ArrowDown") {
+    newPosition.row += 1;
+  } else if (pressedKey === "ArrowLeft") {
+    newPosition.column -= 1;
+  } else if (pressedKey === "ArrowRight") {
+    newPosition.column += 1;
   }
 
-  if (validarMovimento(labirinto, novaPosicao)) {
-    posicaoAtual = novaPosicao;
+  if (validateMovement(maze, newPosition)) {
+    currentPosition = newPosition;
 
-    movimentos++;
+    movements++;
 
-    const encontrouChegada = verificarCondicaoDeVitoria(labirinto, novaPosicao);
+    const encontrouChegada = validateWinCondition(maze, newPosition);
 
     if (encontrouChegada) {
-      console.log("CHEGOU AO FIM PARABENS");
-      alternarResultado();
+      switchResult();
     }
 
-    criarLabirinto(labirinto, posicaoAtual);
+    createMaze(maze, currentPosition);
   }
 
-  console.log(posicaoAtual);
+  console.log(currentPosition);
 }
 
-function alternarResultado() {
-  const containerResultado = document.querySelector("#container-resultado");
+function switchResult() {
+  const resultContainer = document.querySelector("#result-container");
 
-  if (containerResultado.classList.contains("esconder")) {
-    containerResultado.classList.remove("esconder");
-    containerResultado.classList.add("mostrar");
+  if (resultContainer.classList.contains("hidden")) {
+    resultContainer.classList.remove("hidden");
+    resultContainer.classList.add("visible");
   } else {
-    containerResultado.classList.remove("mostrar");
-    containerResultado.classList.add("esconder");
+    resultContainer.classList.remove("visible");
+    resultContainer.classList.add("hidden");
   }
 
-  const pResultado = document.querySelector("#resultado");
-  pResultado.innerText = `Você venceu em ${movimentos} movimento(s)!!`;
+  const pResult = document.querySelector("#result");
+  pResult.innerText = `You won in ${movements} movements!!`;
 }
 
-function verificarCondicaoDeVitoria(labirinto, posicao) {
-  const linha = posicao.linha;
-  const coluna = posicao.coluna;
+function validateWinCondition(maze, position) {
+  const row = position.row;
+  const column = position.column;
 
-  return labirinto[linha][coluna] === "F";
+  return maze[row][column] === "F";
 }
 
-document.addEventListener("keydown", function (evento) {
-  evento.preventDefault();
-  const teclaPressionada = evento.key;
+document.addEventListener("keydown", function (event) {
+  event.preventDefault();
+  const pressedKey = event.key;
 
-  moverJogador(modeloLabirinto, teclaPressionada);
+  moverJogador(mazeModel, pressedKey);
 });
 
-const btnResetarJogo = document.querySelector("#btn-resetar-jogo");
-btnResetarJogo.addEventListener("click", function (evento) {
-  console.log("Botão de Resetar funcionando");
+const btnResetGame = document.querySelector("#btn-reset-game");
+btnResetGame.addEventListener("click", function (event) {
+  currentPosition = initialPosition;
 
-  posicaoAtual = posicaoInicial;
+  movements = 0;
 
-  movimentos = 0;
+  switchResult();
 
-  alternarResultado();
-
-  criarLabirinto(modeloLabirinto, posicaoInicial);
+  createMaze(mazeModel, initialPosition);
 });
 
-criarLabirinto(modeloLabirinto, posicaoAtual);
+createMaze(mazeModel, currentPosition);

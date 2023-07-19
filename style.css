@@ -7,7 +7,7 @@ body {
   background-color: #e2cec1;
 }
 
-#titulo-principal {
+#main-title {
   text-align: center;
 }
 
@@ -17,34 +17,34 @@ body {
   padding: 1rem;
 }
 
-#labirinto {
+#maze {
   border: 5px solid black;
 }
 
-.linha {
+.row {
   display: flex;
 }
 
-.celula {
+.cell {
   width: 35px;
   height: 35px;
   background-size: cover;
   background-color: grey;
 }
 
-.parede {
+.wall {
   background-image: url("./assets/imgs/brick-wall.png");
 }
 
-.jogador {
+.player {
   background-image: url("./assets/imgs/hedgehog.png");
 }
 
-.chegada {
+.finish {
   background-image: url("./assets/imgs/potato.png");
 }
 
-#container-resultado {
+#result-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,15 +52,15 @@ body {
   margin: 1rem 0 1rem 0;
 }
 
-.esconder {
+.hidden {
   visibility: hidden;
 }
 
-.mostrar {
+.visible {
   visibility: visible;
 }
 
-#btn-resetar-jogo {
+#btn-reset-game {
   width: 200px;
   height: 50px;
   font-size: 1.05rem;
@@ -74,7 +74,7 @@ body {
   transition: background-color 0.7s, color 0.7s, box-shadow 0.7s;
 }
 
-#btn-resetar-jogo:hover {
+#btn-reset-game:hover {
   background-color: #d97c41;
   color: white;
   box-shadow: 5px 5px #dda481;
