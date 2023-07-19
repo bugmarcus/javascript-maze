@@ -1,21 +1,25 @@
 const modeloLabirinto = [
-  "WWWWWWWWWWWWWWWWWWWWW", // linha 0
-  "W   W     W     W W W", // linha 1
-  "W W W WWW WWWWW W W W", // linha 2
-  "W W W   W     W W   W", // linha 3
-  "W WWWWWWW W WWW W W W", // linha 4
-  "W         W     W W W", // linha 5
-  "W WWW WWWWW WWWWW W W", // linha 6
-  "W W   W   W W     W W", // linha 7
-  "W WWWWW W W W WWW W F", // linha 8
-  "S     W W W W W W WWW", // linha 9
-  "WWWWW W W W W W W W W", // linha 10
-  "W     W W W   W W W W", // linha 11
-  "W WWWWWWW WWWWW W W W", // linha 12
-  "W       W       W   W", // linha 13
-  "WWWWWWWWWWWWWWWWWWWWW", // linha 14
+  "WWWWWWWWWWWWWWWWWWWWW",
+  "W   W     W     W W W",
+  "W W W WWW WWWWW W W W",
+  "W W W   W     W W   W",
+  "W WWWWWWW W WWW W W W",
+  "W         W     W W W",
+  "W WWW WWWWW WWWWW W W",
+  "W W   W   W W     W W",
+  "W WWWWW W W W WWW W F",
+  "S     W W W W W W WWW",
+  "WWWWW W W W W W W W W",
+  "W     W W W   W W W W",
+  "W WWWWWWW WWWWW W W W",
+  "W       W       W   W",
+  "WWWWWWWWWWWWWWWWWWWWW",
 ];
-let posicaoJogador = { linha: 9, coluna: 0 };
+
+const posicaoInicial = { linha: 9, coluna: 0 };
+
+let posicaoAtual = { linha: 9, coluna: 0 };
+let movimentos = 0;
 
 function criarLabirinto(labirinto, posicao) {
   const divLabirinto = document.querySelector("#labirinto");
@@ -32,27 +36,25 @@ function criarLabirinto(labirinto, posicao) {
       const celulaAtual = labirinto[linha][coluna];
 
       if (celulaAtual === "W") {
-        celula.innerText = "W";
         celula.classList.add("parede");
       } else if (linha === posicao.linha && coluna === posicao.coluna) {
-        celula.innerText = "S";
         celula.classList.add("jogador");
       } else if (celulaAtual === "F") {
-        celula.innerText = "F";
         celula.classList.add("chegada");
-      } else if (celulaAtual === "") {
+      } else if (celulaAtual === " ") {
         celula.classList.add("caminho");
       }
 
       divLinha.appendChild(celula);
     }
+
     divLabirinto.appendChild(divLinha);
   }
 }
 
-function validaMovimento(posicao) {
-  const totalLinhas = modeloLabirinto.length;
-  const totalColunas = modeloLabirinto[0].length;
+function validarMovimento(labirinto, posicao) {
+  const totalLinhas = labirinto.length;
+  const totalColunas = labirinto[0].length;
   const linha = posicao.linha;
   const coluna = posicao.coluna;
 
@@ -61,7 +63,7 @@ function validaMovimento(posicao) {
     linha >= totalLinhas ||
     coluna < 0 ||
     coluna >= totalColunas ||
-    modeloLabirinto[linha][coluna] === "W"
+    labirinto[linha][coluna] === "W"
   ) {
     return false;
   }
@@ -69,37 +71,11 @@ function validaMovimento(posicao) {
   return true;
 }
 
-function mostraResultado() {
-  const containerResultado = document.getElementById("container-resultado");
-  containerResultado.style.display = "block";
-}
-
-function escondeResultado() {
-  const containerResultado = document.getElementById("container-resultado");
-  containerResultado.style.display = "none";
-}
-
-function verificaVitoria(posicao) {
-  if (modeloLabirinto[posicao.linha][posicao.coluna] === "F") {
-    mostraResultado();
-    return true;
-  }
-  return false;
-}
-
-function resetarJogo() {
-  posicaoJogador = { linha: 9, coluna: 0 };
-  criarLabirinto(modeloLabirinto, posicaoJogador);
-  escondeResultado();
-}
-
-document.addEventListener("keydown", function (evento) {
-  const teclaPressionada = evento.key;
+function moverJogador(labirinto, teclaPressionada) {
   const novaPosicao = {
-    linha: posicaoJogador.linha,
-    coluna: posicaoJogador.coluna,
+    linha: posicaoAtual.linha,
+    coluna: posicaoAtual.coluna,
   };
-
   if (teclaPressionada === "ArrowUp") {
     novaPosicao.linha -= 1;
   } else if (teclaPressionada === "ArrowDown") {
@@ -110,14 +86,64 @@ document.addEventListener("keydown", function (evento) {
     novaPosicao.coluna += 1;
   }
 
-  if (validaMovimento(novaPosicao)) {
-    posicaoJogador = novaPosicao;
-    criarLabirinto(modeloLabirinto, posicaoJogador);
-    verificaVitoria(posicaoJogador);
+  if (validarMovimento(labirinto, novaPosicao)) {
+    posicaoAtual = novaPosicao;
+
+    movimentos++;
+
+    const encontrouChegada = verificarCondicaoDeVitoria(labirinto, novaPosicao);
+
+    if (encontrouChegada) {
+      console.log("CHEGOU AO FIM PARABENS");
+      alternarResultado();
+    }
+
+    criarLabirinto(labirinto, posicaoAtual);
   }
+
+  console.log(posicaoAtual);
+}
+
+function alternarResultado() {
+  const containerResultado = document.querySelector("#container-resultado");
+
+  if (containerResultado.classList.contains("esconder")) {
+    containerResultado.classList.remove("esconder");
+    containerResultado.classList.add("mostrar");
+  } else {
+    containerResultado.classList.remove("mostrar");
+    containerResultado.classList.add("esconder");
+  }
+
+  const pResultado = document.querySelector("#resultado");
+  pResultado.innerText = `Você venceu em ${movimentos} movimento(s)!!`;
+}
+
+function verificarCondicaoDeVitoria(labirinto, posicao) {
+  const linha = posicao.linha;
+  const coluna = posicao.coluna;
+
+  return labirinto[linha][coluna] === "F";
+}
+
+document.addEventListener("keydown", function (evento) {
+  evento.preventDefault();
+  const teclaPressionada = evento.key;
+
+  moverJogador(modeloLabirinto, teclaPressionada);
 });
 
-const btnResetarJogo = document.getElementById("btn-resetar-jogo");
-btnResetarJogo.addEventListener("click", resetarJogo);
+const btnResetarJogo = document.querySelector("#btn-resetar-jogo");
+btnResetarJogo.addEventListener("click", function (evento) {
+  console.log("Botão de Resetar funcionando");
 
-criarLabirinto(modeloLabirinto, posicaoJogador);
+  posicaoAtual = posicaoInicial;
+
+  movimentos = 0;
+
+  alternarResultado();
+
+  criarLabirinto(modeloLabirinto, posicaoInicial);
+});
+
+criarLabirinto(modeloLabirinto, posicaoAtual);

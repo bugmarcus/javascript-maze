@@ -4,22 +4,17 @@ body {
   font-family: "Poppins", sans-serif;
   width: 80%;
   margin: 0 auto;
+  background-color: #e2cec1;
+}
+
+#titulo-principal {
+  text-align: center;
 }
 
 #container {
   display: flex;
   justify-content: center;
-  border: 1px solid black;
   padding: 1rem;
-}
-
-#container-resultado {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid black;
-  align-items: center;
-  padding: 0.5rem 0 1.5rem 0;
-  margin: 1rem 0 1rem 0;
 }
 
 #labirinto {
@@ -31,22 +26,56 @@ body {
 }
 
 .celula {
-  display: flex;
   width: 35px;
   height: 35px;
-  align-items: center;
-  justify-content: center;
-  color: white;
+  background-size: cover;
+  background-color: grey;
 }
 
 .parede {
-  background-color: #333;
+  background-image: url("./assets/imgs/brick-wall.png");
 }
 
 .jogador {
-  background-color: turquoise;
+  background-image: url("./assets/imgs/hedgehog.png");
 }
 
 .chegada {
-  background-color: rgb(232, 104, 104);
+  background-image: url("./assets/imgs/potato.png");
+}
+
+#container-resultado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0 1.5rem 0;
+  margin: 1rem 0 1rem 0;
+}
+
+.esconder {
+  visibility: hidden;
+}
+
+.mostrar {
+  visibility: visible;
+}
+
+#btn-resetar-jogo {
+  width: 200px;
+  height: 50px;
+  font-size: 1.05rem;
+  font-weight: 650;
+
+  border: 2px solid black;
+  box-shadow: 5px 5px gray;
+
+  cursor: pointer;
+
+  transition: background-color 0.7s, color 0.7s, box-shadow 0.7s;
+}
+
+#btn-resetar-jogo:hover {
+  background-color: #d97c41;
+  color: white;
+  box-shadow: 5px 5px #dda481;
 }
